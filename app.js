@@ -68,13 +68,17 @@ const gallery = document.querySelector('.gallery')
 const modalWindow = document.querySelector('div.lightbox')
 const modalImg = document.querySelector('.lightbox__image')
 const button = document.querySelector('button[data-action="close-lightbox"]')
+const clickWindow = document.querySelector('div.lightbox__overlay')
+
 gallery.addEventListener('click', onModal)
 button.addEventListener('click', clossedButton)
-
+clickWindow.addEventListener('click', clossedWindow)
+document.addEventListener('keyup', keyEsc)
 
 function galleryPush(element) {
-  const test = element.map(({preview, original}) => {
-    return `
+  const imgArray = element
+    .map(({ preview, original }) => {
+      return `
 <li class="gallery__item">
 <a
 class="gallery__link"
@@ -88,31 +92,38 @@ class="gallery__link"
   />
 </a>
 </li>`
-  })
-  const tst = test.join('')
- 
-  gallery.insertAdjacentHTML('beforeend', tst)
+    })
+    .join('')
 
- 
-}
-galleryPush(galleryItems)
-
-
-
-
-
-
-
-function onModal(event){
-  modalWindow.classList.add('is-open')
-console.log(modalImg);
-modalImg.src = event.target.dataset.source;
-
-
+  gallery.insertAdjacentHTML('beforeend', imgArray)
 }
 
-function clossedButton(){
+function onModal(event) {
+  const examination = event.target.classList.contains('gallery__image')
+  if (examination) {
+    modalWindow.classList.add('is-open')
+
+    modalImg.src = event.target.dataset.source
+  }
+}
+
+function clossedButton() {
   modalWindow.classList.remove('is-open')
-  modalImg.src= ''
-
+  modalImg.src = ''
 }
+
+function clossedWindow() {
+  modalWindow.classList.remove('is-open')
+  modalImg.src = ''
+}
+function keyEsc(event) {
+  if (event.key === 'Escape') {
+    modalWindow.classList.remove('is-open')
+    modalImg.src = ''
+  }
+
+  if (event.key === 'ArrowRight') {
+  }
+}
+
+galleryPush(galleryItems)
