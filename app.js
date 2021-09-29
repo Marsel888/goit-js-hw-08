@@ -73,22 +73,23 @@ const clickWindow = document.querySelector('div.lightbox__overlay')
 gallery.addEventListener('click', onModal)
 button.addEventListener('click', clossedButton)
 clickWindow.addEventListener('click', clossedWindow)
-document.addEventListener('keyup', keyEsc)
+
 
 function galleryPush(element) {
   const imgArray = element
-    .map(({ preview, original }) => {
+    .map(({ preview, original, description }) => {
       return `
 <li class="gallery__item">
 <a
 class="gallery__link"
+ href="${original}"
 
   >
   <img
     class="gallery__image"
     src="${preview}"
     data-source="${original}"
-    alt="Tulips"
+    alt="${description}"
   />
 </a>
 </li>`
@@ -99,31 +100,41 @@ class="gallery__link"
 }
 
 function onModal(event) {
-  const examination = event.target.classList.contains('gallery__image')
-  if (examination) {
-    modalWindow.classList.add('is-open')
+  event.preventDefault();
+const isImg = event.target.tagName === "IMG";
+if (isImg) {
+  window.addEventListener('keyup', keyEsc)
+  modalWindow.classList.add('is-open');
+  modalImg.src = event.target.dataset.source ;
+}
+ 
 
-    modalImg.src = event.target.dataset.source
-  }
+  
 }
 
 function clossedButton() {
-  modalWindow.classList.remove('is-open')
-  modalImg.src = ''
+  closeModalWindow()
 }
 
 function clossedWindow() {
-  modalWindow.classList.remove('is-open')
-  modalImg.src = ''
+  closeModalWindow()
 }
 function keyEsc(event) {
   if (event.key === 'Escape') {
-    modalWindow.classList.remove('is-open')
-    modalImg.src = ''
+    closeModalWindow()
   }
 
   if (event.key === 'ArrowRight') {
   }
+}
+
+
+function closeModalWindow (){
+  window.removeEventListener('keyup', keyEsc)
+  modalWindow.classList.remove('is-open')
+  modalImg.src = '';
+  modalImg.alt = '';
+
 }
 
 galleryPush(galleryItems)
